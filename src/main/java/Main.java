@@ -1,5 +1,3 @@
-import jdk.dynalink.CallSiteDescriptor;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -20,24 +18,12 @@ public class Main {
     private static Workbook workbook;
     private static Sheet sheet;
     private static Row[] rows;
-    private static CellStyle cellStyleBorder;
-    private static CellStyle cellStyleDefault;
-    private static CellStyle cellStyleCenter;
-    private static CellStyle cellStyleLeft;
-    private static CellStyle cellStyleWrap;
-    private static Font font;
     private static Random random;
 
     public static void main(String[] args) throws IOException {
         workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("sheetOne");
+        sheet = workbook.createSheet("Начальная школа");
         rows = new Row[66];
-        cellStyleBorder = workbook.createCellStyle();
-        cellStyleDefault = workbook.createCellStyle();
-        cellStyleCenter = workbook.createCellStyle();
-        cellStyleLeft = workbook.createCellStyle();
-        cellStyleWrap = workbook.createCellStyle();
-        font = workbook.createFont();
         random = new Random();
 
         for (int i = 0; i < rows.length; i++) {
@@ -51,7 +37,7 @@ public class Main {
         fill();
         setLayout();
 
-        workbook.write(new FileOutputStream("kekis.xlsx"));
+        workbook.write(new FileOutputStream("result.xlsx"));
         workbook.close();
     }
 
@@ -169,6 +155,13 @@ public class Main {
     }
 
     private static void setLayout() {
+        CellStyle cellStyleBorder = workbook.createCellStyle();
+        CellStyle cellStyleDefault = workbook.createCellStyle();
+        CellStyle cellStyleCenter = workbook.createCellStyle();
+        CellStyle cellStyleLeft = workbook.createCellStyle();
+        CellStyle cellStyleWrap = workbook.createCellStyle();
+
+        Font font = workbook.createFont();
         font.setFontHeightInPoints((short) 10);
         font.setFontName("Times new roman");
 
@@ -257,7 +250,6 @@ public class Main {
         rows[64].setHeightInPoints(32);
     }
 
-
     private static String[] getRandomData() {
         String[] randomData = new String[40];
         int daysFact;
@@ -269,7 +261,6 @@ public class Main {
                 surname[random.nextInt(surname.length)] + " " + name[random.nextInt(name.length)] +
                 " " + daysPlan + " " + daysFact + " " + 0 + " " + daysPlan * dayCost + " " +
                 daysFact * dayCost + " " + (daysPlan - daysFact) * 50;
-            System.out.println(randomData[i - 1]);
         }
         return randomData;
     }
