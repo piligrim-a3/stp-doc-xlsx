@@ -1,3 +1,4 @@
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -17,12 +18,18 @@ public class Main {
     private static Workbook workbook;
     private static Sheet sheet;
     private static Row[] rows;
+    private static CellStyle cellStyleBorder;
+    private static CellStyle cellStyleDefault;
+    private static Font font;
     private static Random random;
 
     public static void main(String[] args) throws IOException {
         workbook = new XSSFWorkbook();
         sheet = workbook.createSheet("sheetOne");
         rows = new Row[66];
+        cellStyleBorder = workbook.createCellStyle();
+        cellStyleDefault = workbook.createCellStyle();
+        font = workbook.createFont();
         random = new Random();
 
         for (int i = 0; i < rows.length; i++) {
@@ -34,6 +41,7 @@ public class Main {
 
         merge();
         fill();
+        setBorderLayout();
 
         workbook.write(new FileOutputStream("kekis.xlsx"));
         workbook.close();
@@ -72,6 +80,7 @@ public class Main {
 
     private static void fill() { //a0 b1 c2 d3 e4 f5 g6 h7 i8 j9
         String[] randomData = getRandomData();
+        String[] split;
         rows[0].getCell(7).setCellValue("УТВЕРЖДАЮ:");
 
         rows[1].getCell(7).setCellValue("Директор");
@@ -109,8 +118,27 @@ public class Main {
         rows[15].getCell(4).setCellValue("плановые");
         rows[15].getCell(5).setCellValue("Фактические");
 
-        for (int i = 16; i < 55; i++) {
-            
+        for (int i = 16; i < 56; i++) {
+            split = randomData[i - 16].split("\\s");
+            for (int j = 0; j < 2; j++) {
+                rows[i].getCell(j).setCellValue(Double.parseDouble(split[j]));
+            }
+            rows[i].getCell(2).setCellValue(split[2]);
+            rows[i].getCell(3).setCellValue(split[3] + " " + split[4]);
+            for (int j = 4; j < 10; j++) {
+                rows[i].getCell(j).setCellValue(Double.parseDouble(split[j + 1]));
+            }
+        }
+
+        rows[56].getCell(3).setCellValue("Итого:");
+
+        int value;
+        for (int j = 4; j < 10; j++) {
+            value = 0;
+            for (int i = 16; i < 56; i++) {
+                value += rows[i].getCell(j).getNumericCellValue();
+            }
+            rows[56].getCell(j).setCellValue(value);
         }
 
         rows[58].getCell(1).setCellValue("Отчет составлен в двух экземплярах.");
@@ -131,6 +159,35 @@ public class Main {
         rows[65].getCell(4).setCellValue("(подпись)");
         rows[65].getCell(7).setCellValue("(Ф.И.О.)");
     }
+
+    private static void setBorderLayout() {
+        cellStyleBorder.setBorderBottom(HSSFCellStyle.BORDER_THIN);
+        cellStyleBorder.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        cellStyleBorder.setBorderLeft(HSSFCellStyle.BORDER_THIN);
+        cellStyleBorder.setBorderRight(HSSFCellStyle.BORDER_THIN);
+
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Times new roman");
+
+        cellStyleBorder.setFont(font);
+        cellStyleDefault.setFont(font);
+
+        for (Row row : rows) {
+            for (int j = 0; j < 10; j++) {
+                row.getCell(j).setCellStyle(cellStyleDefault);
+            }
+        }
+
+        for (int i = 14; i < 56; i++) {
+            for (int j = 0; j < 10; j++) {
+                rows[i].getCell(j).setCellStyle(cellStyleBorder);
+            }
+        }
+        for (int i = 3; i < 10; i++) {
+            rows[56].getCell(i).setCellStyle(cellStyleBorder);
+        }
+    }
+
 
     private static String[] getRandomData() {
         String[] randomData = new String[40];
