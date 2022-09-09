@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class Main {
 
+    // Имена, фамилии и классы для создания случайных данных о человеке
     private static final String[] name = {"Андрей", "Илья", "Никита", "Артем", "Евгений", "Петр", "Вадим"};
     private static final String[] surname = {"Иванов", "Смирнов", "Петров", "Попов", "Васильев", "Медведев", "Сидоров", "Антонов"};
     private static final String[] classLetter = {"A", "B", "C", "D"};
@@ -21,11 +22,13 @@ public class Main {
     private static Random random;
 
     public static void main(String[] args) throws IOException {
-        workbook = new XSSFWorkbook();
-        sheet = workbook.createSheet("Начальная школа");
-        rows = new Row[66];
+        workbook = new XSSFWorkbook(); //Создание xlsx файла
+        sheet = workbook.createSheet("Начальная школа"); //Создание листа в файле
+        rows = new Row[66]; //Массив для храненияинформации о строках
         random = new Random();
 
+
+        //Создание 66 строк и заполнения каждой из них 9-ью ячейками
         for (int i = 0; i < rows.length; i++) {
             rows[i] = sheet.createRow(i);
             for (int j = 0; j < 10; j++) {
@@ -33,11 +36,11 @@ public class Main {
             }
         }
 
-        merge();
-        fill();
-        setLayout();
+        merge(); //Метод в котором производится объединения необходимых ячеек
+        fill(); //Метод в котором производится заполнение ячеек данными
+        setLayout(); //Метод в котором производится изменение структуры ячеек, строк и столбцов (ширина, высота, шрифт и т.д.)
 
-        workbook.write(new FileOutputStream("result.xlsx"));
+        workbook.write(new FileOutputStream("result.xlsx")); //Сохранение таблицы в файл result.xlsx
         workbook.close();
     }
 
@@ -250,7 +253,7 @@ public class Main {
         rows[64].setHeightInPoints(32);
     }
 
-    private static String[] getRandomData() {
+    private static String[] getRandomData() { //Метод для генерации случайных данных о человеке
         String[] randomData = new String[40];
         int daysFact;
 
